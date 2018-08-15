@@ -1,0 +1,71 @@
+WHAT WE WANT:
+
+{'Executable in ADS':
+    {'detection':
+        {'filter':
+            {'Imphash':
+                '00000000000000000000000000000000'},
+        'selection':
+            {'EventID':
+                15},
+        'condition': 'selection and not filter'
+        }
+    }
+}
+
+{'Executable in ADS':
+    {'detection':
+        {'filter':
+            {'Imphash':
+                '00000000000000000000000000000000'
+            },
+        'selection':
+            {'EventID':
+                15
+            },
+        'condition':
+            'selection and not filter'
+        }
+    }
+}
+
+
+WHAT WE GOT:
+
+{'status':
+    'experimental',
+    'description':
+        'Detects the creation of an ADS data stream that contains an executable (non-empty imphash)',
+    'author': 'Florian Roth, @0xrawsec',
+    'fields':
+        ['TargetFilename', 'Image'],
+    'tags':
+        ['attack.defense_evasion', 'attack.t1027', 'attack.s0139'],
+    'logsource':
+        {'product':
+            'windows',
+            'description':
+                'Requirements:
+                    Sysmon config with Imphash logging activated',
+                    'service':
+                        'sysmon'},
+    'detection':
+        {'filter':
+            {'Imphash':
+                '00000000000000000000000000000000'},
+        'selection':
+            {'EventID':
+                15},
+        'condition':
+            'selection and not filter'},
+    'references':
+        ['https://twitter.com/0xrawsec/status/1002478725605273600?s=21'],
+    'title':
+        'Executable in ADS',
+    'date':
+        '2018/06/03',
+    'falsepositives':
+        ['unknown'],
+    'level':
+        'critical'}
+

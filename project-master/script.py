@@ -1,48 +1,49 @@
+from config import logfile, \
+                   indicatorfile, \
+                   indicator_dir, \
+                   config_folder, \
+                   alert_document, \
+                   eventlog_empty, \
+                   yaml_path, \
+                   json_path
+
+import signatures
+
 import json
-import configparser
 import logs
 import matching
-import signatures
 import sys
 
-config = configparser.ConfigParser()
-config.read('config.txt')
-log_path = config['sources']['logfile']
-ind_path = config['sources']['indicatorfile']
-ind_dir = config['sources']['indicator_dir']
-base = config['sources']['config_folder']
-alert_doc = config['sources']['alert_document']
-event_log = config['sources']['event_log']
-eventlog_empty = config['sources']['eventlog_empty']
 
-logs.import_log(event_log, eventlog_empty)
+def run_script(xml_in):
+    """
+    Initializes the script which will generates any alerts for a given xml sysmon log
+    :param xml_in: file, xml file which is our sysmon log
+    :return:
+    """
 
-try:
-	with open(eventlog_empty) as x:
-		log = json.load(x)
-except:
-	print "Error with event_json.json."
-	sys.exit(1)
-#log = logs.log_to_json(eventlog_empty)
+    logs.import_log(xml_in, eventlog_empty)
 
-yaml_path = base + "/indicators.yaml"
-json_path = base + "/indicators.json"
-signatures.import_ind(ind_dir, yaml_path)
-ind = signatures.create_json(yaml_path, json_path)
+    try:
+        with open(eventlog_empty) as x:
+            log = json.load(x)
+    except OSError:
+        print "Error with event_json.json."
+        sys.exit(1)
 
-alert_log = []
-alert = []
+    signatures.import_ind(indicator_dir, yaml_path)
+    ind = signatures.create_json(yaml_path, json_path)
 
-matching.write_alert("Alerts Generated:" + "\n\n", alert_doc)
+    alert_log = []
+    alert = []
 
-event_dict = logs.create_event_dict(log)
-count = 0
-for k, v in event_dict.iteritems():
+    # matching.write_alert("Alerts Generated:" + "\n\n", alert_document)
+
+    event_dict = logs.create_event_dict(log)
+    count = 0
+    for k, v in event_dict.iteritems():
         b = logs.flattened(v)
         c = logs.update_dict(b)
         for ik, iv in ind.iteritems():
-        	alert_log = matching.analyze(c, ik, iv, alert_log, alert_doc)
+            alert_log = matching.analyze(c, ik, iv, alert_log, alert_document)
         count = count + 1
-
-
-
