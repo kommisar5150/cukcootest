@@ -61,7 +61,7 @@ class Beachcomber(ServiceBase):
         newline_count = 0
         content = ""
         yml_indicator = ""
-        xml_hits = ResultSection(title_text='xml Malware Indicator Match')
+        # xml_hits = ResultSection(title_text='xml Malware Indicator Match')
 
         if os.stat("file").st_size == 0:
             # Result file is empty, nothing to report
@@ -82,7 +82,7 @@ class Beachcomber(ServiceBase):
                 section = ResultSection(SCORE.VHIGH, yml_indicator)
                 section.add_line(content)
                 res.add_section(section)
-                res.add_result(xml_hits)
+                # res.add_result(xml_hits)
                 content = []
                 line_count = 0
 
