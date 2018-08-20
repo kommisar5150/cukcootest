@@ -19,7 +19,7 @@ class XmlResultObject(ResultSection):
         )
 
 
-class Beachcomber(ServiceBase):
+class Beach(ServiceBase):
     """
     Service verifies a sysmon xml log by matching potential threats
     """
@@ -33,7 +33,7 @@ class Beachcomber(ServiceBase):
     SERVICE_RAM_MB = 256
 
     def __init__(self, cfg=None):
-        super(Beachcomber, self).__init__(cfg)
+        super(Beach, self).__init__(cfg)
 
     def start(self):
         self.log.debug("Beachcomber service started")
@@ -49,11 +49,16 @@ class Beachcomber(ServiceBase):
 
         script.run_script(xml)
 
-        with open("alerts_generated.txt", "r") as alerts:
+        with open("opt/al/pkg/al_services/alsvc_beach/alerts_generated.txt", "r") as alerts:
             output = alerts.readlines()
 
         result = self.parse_alerts(output)
         request.result = result
+
+        # os.remove("opt/al/pkg/al_services/alsvc_beach/alerts_generated.txt")
+        os.remove("opt/al/pkg/al_services/alsvc_beach/event_json.json")
+        os.remove("opt/al/pkg/al_services/alsvc_beach/indicators.json")
+        os.remove("opt/al/pkg/al_services/alsvc_beach/indicators.yaml")
 
     def parse_alerts(self, alerts):
         res = Result()
@@ -61,9 +66,9 @@ class Beachcomber(ServiceBase):
         newline_count = 0
         content = ""
         yml_indicator = ""
-        # xml_hits = ResultSection(title_text='xml Malware Indicator Match')
+        xml_hits = ResultSection(title_text='xml Malware Indicator Match')
 
-        if os.stat("file").st_size == 0:
+        if os.stat("/opt/al/pkg/al_services/alsvc_beach/alerts_generated.txt").st_size == 0:
             # Result file is empty, nothing to report
             return res
 
@@ -79,12 +84,10 @@ class Beachcomber(ServiceBase):
                 newline_count += 1
             else:
                 newline_count = 0
-                section = ResultSection(SCORE.VHIGH, yml_indicator)
-                section.add_line(content)
-                res.add_section(section)
-                # res.add_result(xml_hits)
-                content = []
+                xml_hits.add_section(XmlResultObject(yml_indicator, content, SCORE.VHIGH))
+                content = ""
                 line_count = 0
 
+        res.add_result(xml_hits)
         return res
 

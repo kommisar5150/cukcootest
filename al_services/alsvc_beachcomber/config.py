@@ -1,0 +1,10 @@
+logfile = "/opt/al/pkg/al_services/alsvc_beach/event_json.json"
+indicatorfile = "/opt/al/pkg/al_services/alsvc_beach/bigfile_json.json"
+indicator_dir = "/opt/al/pkg/al_services/alsvc_beach/sysmon/"
+config_folder = ""
+alert_document = "/opt/al/pkg/al_services/alsvc_beach/alerts_generated.txt"
+event_log = "/opt/al/pkg/al_services/alsvc_beach/sysmonout.xml"
+eventlog_empty = "/opt/al/pkg/al_services/alsvc_beach/event_json.json"
+
+yaml_path = "/opt/al/pkg/al_services/alsvc_beach/indicators.yaml"
+json_path = "/opt/al/pkg/al_services/alsvc_beach/indicators.json"
