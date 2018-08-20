@@ -1,1 +1,1 @@
-from al_services.alsvc_comber.comber import Comber
+from al_services.alsvc_beachcomber.beachcomber import Beachcomber

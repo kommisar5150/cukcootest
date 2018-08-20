@@ -1,8 +1,8 @@
-from al_services.alsvc_comber.config import indicator_dir, \
-                                            alert_document, \
-                                            eventlog_empty, \
-                                            yaml_path, \
-                                            json_path
+from al_services.alsvc_beachcomber.config import indicator_dir, \
+                                                 alert_document, \
+                                                 eventlog_empty, \
+                                                 yaml_path, \
+                                                 json_path
 
 import signatures
 import json
