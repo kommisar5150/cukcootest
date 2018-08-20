@@ -1,5 +1,6 @@
 from io import open
 from xml.parsers.expat import ExpatError
+
 import sys
 import json
 import collections
@@ -14,6 +15,7 @@ def import_log(origin, new_log):
     :param new_log:
     :return:
     """
+
     try:
         with open(new_log, 'w') as event_json:
             doc = xmltodict.parse(origin)
@@ -31,11 +33,13 @@ def flattened(event):
     """
 
     items = []
-    for k, v in event.items():
+
+    for k, v in event.iteritems():
         if isinstance(v, collections.MutableMapping):
-            items.extend(flattened(v).items())
+            items.extend(flattened(v).iteritems())
         else:
             items.append((k, v))
+
     return dict(items)
 
 
@@ -47,16 +51,18 @@ def create_event_dict(log):
     :return:
     """
 
+    count = 0
     y = {}
     event_dict = {}
+
     for k, v in log.iteritems():
         y = flattened(v)
 
-    count = 0
     for k, v in y.iteritems():
         for item in v:
             event_dict['Event_' + str(count)] = item
             count = count + 1
+
     return event_dict
 
 
@@ -74,6 +80,7 @@ def update_dict(dic):
     for item in data:
         key = 0
         value = 0
+
         for k, v in item.iteritems():
             if k == '#text':
                 value = v
@@ -89,4 +96,5 @@ def update_dict(dic):
 
     for k, v in tempdict.iteritems():
         dic.update({k: v})
+
     return dic

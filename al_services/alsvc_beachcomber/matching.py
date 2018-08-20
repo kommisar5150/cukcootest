@@ -1,7 +1,6 @@
-import fnmatch
-# import sys
-# import collections
 from signatures import *
+
+import fnmatch
 
 
 def find_matches(event, indi):
@@ -9,9 +8,9 @@ def find_matches(event, indi):
     matches the items in the indicator to the event... iterates through the sections and if theres a list it iterates
     through that. Uses checkpair to see if the items in the list/dictionary match items in the eventlog. event should be
     the eventlog and indi is the indicator
-    :param event:
-    :param indi:
-    :return:
+    :param event: dict, event read from the sysmon log
+    :param indi: dict, dictionary of indicators
+    :return: bool, whether or not we found a match
     """
 
     flag = False
@@ -52,10 +51,7 @@ def match_basic(event, x):
     :return:
     """
 
-    if find_matches(event, x):
-        return True
-    else:
-        return False
+    return find_matches(event, x)
 
 
 def match_1_of_them(event, v):
@@ -73,10 +69,7 @@ def match_1_of_them(event, v):
         if a != 'condition':
             z = v['detection'][str(a)]
             find_matches(event, z)
-            if find_matches(event, z):
-                return True
-            else:
-                return False
+            return find_matches(event, z)
 
 
 def sel_and_oneof(event, v, name):
@@ -97,11 +90,7 @@ def sel_and_oneof(event, v, name):
                 if (item != 'selection') and (item != 'condition'):
                     z = v['detection'][str(item)]
                     find_matches(event, z)
-                    if find_matches(event, z):
-                        return True
-
-                    else:
-                        return False
+                    return find_matches(event, z)
         else:
             return False
     else:
@@ -125,9 +114,9 @@ def meth_match(event, v, name):
             match_basic(event, v['detection']['filterprocess'])
 
     else:
+        # ERROR IN FORMATTING
         print "Error in Formatting: No dictionary found: " + str(name)
         return False
-    # ERROR IN FORMATTING
 
 
 def all_of_them(event, v, name):
@@ -144,14 +133,12 @@ def all_of_them(event, v, name):
         for item in sections:
             z = v['detection'][str(item)]
             find_matches(event, z)
-            if find_matches(event, z):
-                return True
-            else:
-                return False
+            return find_matches(event, z)
+
     else:
+        # ERROR IN FORMATTING
         print "Error in Formatting: No dictionary found: " + str(name)
         return False
-    # ERROR IN FORMATTING
 
 
 def analyze(event, ind_name, indicator, alert_log, doc):
@@ -234,13 +221,12 @@ def checkpair(self, key, value):
     :param value:
     :return:
     """
+
     if key in self:
         if '*' in str(value):
             return fnmatch.fnmatch(self[key], value)
-        elif self[key] == str(value):
-            return True
         else:
-            return False
+            return self[key] == str(value)
 
     else:
         return False
@@ -253,6 +239,7 @@ def write_alert(string, doc):
     :param doc:
     :return:
     """
+
     with open(doc, 'a+') as f:
         f.write(string)
         f.write('\n')
@@ -273,6 +260,7 @@ def list_event(info, event):
         else:
             key = "{0} : {1}".format(k, v)
             event.append(str(key))
+
     return event
 
 

@@ -1,14 +1,10 @@
-from config import logfile, \
-                   indicatorfile, \
-                   indicator_dir, \
-                   config_folder, \
-                   alert_document, \
-                   eventlog_empty, \
-                   yaml_path, \
-                   json_path
+from al_services.alsvc_comber.config import indicator_dir, \
+                                            alert_document, \
+                                            eventlog_empty, \
+                                            yaml_path, \
+                                            json_path
 
 import signatures
-
 import json
 import logs
 import matching
@@ -33,14 +29,10 @@ def run_script(xml_in):
 
     signatures.import_ind(indicator_dir, yaml_path)
     ind = signatures.create_json(yaml_path, json_path)
-
     alert_log = []
-    alert = []
-
-    # matching.write_alert("Alerts Generated:" + "\n\n", alert_document)
-
     event_dict = logs.create_event_dict(log)
     count = 0
+
     for k, v in event_dict.iteritems():
         b = logs.flattened(v)
         c = logs.update_dict(b)
